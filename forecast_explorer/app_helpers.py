@@ -57,8 +57,15 @@ def forecast_table(forecasts: dict[str, pd.DataFrame], level: float) -> pd.DataF
     return table
 
 
-def summary_for_display(summary: pd.DataFrame, level: float) -> pd.DataFrame:
-    """Turn backtest.summarize() output into a readable table of formatted strings."""
+def summary_for_display(
+    summary: pd.DataFrame, level: float, unit: str | None = "$M"
+) -> pd.DataFrame:
+    """Turn backtest.summarize() output into a readable table of formatted strings.
+
+    ``unit`` labels the average-error column, e.g. "$M" for the built-in series. Pass None
+    for uploaded data, whose units the app doesn't know.
+    """
+    error_col = f"Avg error ({unit})" if unit else "Avg error"
     rows = []
     for key, row in summary.iterrows():
         if key == BASELINE or "mae_vs_baseline" not in summary.columns:
@@ -69,7 +76,7 @@ def summary_for_display(summary: pd.DataFrame, level: float) -> pd.DataFrame:
         rows.append(
             {
                 "Method": SHORT_LABELS[key],
-                "Avg error ($M)": f"{row['mae']:,.0f}",
+                error_col: f"{row['mae']:,.0f}",
                 "Avg % error": f"{row['mape']:.1%}",
                 "Error vs. baseline": vs,
                 f"{level:.0%} interval coverage": f"{row['coverage']:.0%}",

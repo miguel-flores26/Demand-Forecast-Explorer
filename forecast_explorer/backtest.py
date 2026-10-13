@@ -44,6 +44,15 @@ MEANINGFUL_IMPROVEMENT = 0.05
 RESULT_COLUMNS = ["model", "origin", "h", "date", "actual", "forecast", "lower", "upper"]
 
 
+def max_origins(n_months: int, horizon: int, step: int = 3, wanted: int = 12) -> int:
+    """How many origins (up to ``wanted``) a series of ``n_months`` can support.
+
+    Returns 0 if the series is too short for even one origin.
+    """
+    available = (n_months - horizon - MIN_HISTORY) // step + 1
+    return max(0, min(wanted, available))
+
+
 def rolling_origin_backtest(
     series: pd.Series,
     horizon: int = 12,

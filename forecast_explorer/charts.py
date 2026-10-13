@@ -19,7 +19,10 @@ def _rgba(hex_color: str, alpha: float) -> str:
 
 
 def forecast_figure(
-    history: pd.Series, forecasts: dict[str, pd.DataFrame], level: float
+    history: pd.Series,
+    forecasts: dict[str, pd.DataFrame],
+    level: float,
+    y_title: str = "Monthly sales ($ millions)",
 ) -> go.Figure:
     """Recent actuals plus each method's forecast line and shaded prediction interval."""
     fig = go.Figure()
@@ -80,7 +83,7 @@ def forecast_figure(
     fig.update_layout(
         hovermode="x unified",
         hoverdistance=5,
-        yaxis_title="Monthly sales ($ millions)",
+        yaxis_title=y_title,
         yaxis_tickformat=",",
         legend={"orientation": "h", "yanchor": "bottom", "y": 1.02, "x": 0},
         margin={"l": 10, "r": 10, "t": 40, "b": 10},
@@ -94,7 +97,9 @@ def forecast_figure(
     return fig
 
 
-def horizon_error_figure(err_by_h: pd.DataFrame) -> go.Figure:
+def horizon_error_figure(
+    err_by_h: pd.DataFrame, y_title: str = "Average error ($ millions)"
+) -> go.Figure:
     """Average backtest error at each months-ahead step, one line per method."""
     fig = go.Figure()
     for key in err_by_h.columns:
@@ -112,7 +117,7 @@ def horizon_error_figure(err_by_h: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         hovermode="x unified",
         xaxis_title="Months ahead",
-        yaxis_title="Average error ($ millions)",
+        yaxis_title=y_title,
         yaxis_tickformat=",",
         yaxis_rangemode="tozero",
         xaxis={"dtick": 1 if len(err_by_h) <= 12 else 3},

@@ -69,6 +69,26 @@ def test_minimum_history_exactly_enough():
     assert res["origin"].nunique() == n_origins
 
 
+@pytest.mark.parametrize(
+    "n_months, expected",
+    [
+        (MIN_HISTORY + 12 - 1, 0),  # one month short of a single origin
+        (MIN_HISTORY + 12, 1),
+        (MIN_HISTORY + 12 + 3 * 4, 5),
+        (400, 12),  # capped at the number wanted
+    ],
+)
+def test_max_origins(n_months, expected):
+    assert bt.max_origins(n_months, horizon=12, step=3) == expected
+
+
+def test_max_origins_is_always_runnable():
+    s = make_series(n_months=MIN_HISTORY + 12 + 7)
+    k = bt.max_origins(len(s), horizon=12, step=3)
+    res = bt.rolling_origin_backtest(s, horizon=12, n_origins=k, step=3, models=NAIVE)
+    assert res["origin"].nunique() == k
+
+
 def test_unknown_model_raises():
     with pytest.raises(KeyError, match="Unknown model"):
         bt.rolling_origin_backtest(make_series(n_months=96), models=["magic"])
