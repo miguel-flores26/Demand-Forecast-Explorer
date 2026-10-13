@@ -51,7 +51,23 @@ All three return a point forecast and a prediction interval (80% by default).
 - **Baseline intervals** use the standard seasonal-naive formula from Hyndman & Athanasopoulos,
   *Forecasting: Principles and Practice*.
 
-Evaluation: rolling-origin backtest, reporting MAE and MAPE per method. _Details TBD._
+### Evaluation: rolling-origin backtest
+
+Each method is refit from several past "origins" using only data available at that point,
+then its forecasts are compared with what actually happened. By default: 12 origins, spaced
+3 months apart and ending at the latest month that leaves a full horizon of actuals, with a
+12-month horizon.
+
+Reported per method:
+- **MAE, MAPE, RMSE.** Average error in dollars, in percent, and with large misses weighted more.
+- **Error vs. baseline.** How much lower (or higher) the method's MAE is than seasonal naive's.
+  A method has to cut MAE by at least 5% to be reported as beating the baseline; smaller
+  differences are reported as a tie. This threshold is a rule of thumb, not a significance test.
+- **Interval coverage.** How often the actual value fell inside the prediction interval
+  (ideally close to the stated level, e.g. 80%).
+
+Limitation: forecasts from neighboring origins overlap, so the forecast-actual pairs are not
+independent. The results are a careful comparison, not proof that one method is better.
 
 ## Results
 
@@ -64,6 +80,7 @@ _TBD. Will be written from actual backtest output only._
 - The COVID-19 period (2020–2021) is a major disruption that affects both model fitting and
   backtest results. _How it's handled: TBD._
 - This is a portfolio project, not a production forecasting system or financial advice.
+- On a few backtest origins, the SARIMA optimizer stops with a convergence warning (a line-search stop, not an iteration limit). The estimates at those points were inspected and look typical for this model, but they are not guaranteed to be optimal.
 
 ## Project structure
 

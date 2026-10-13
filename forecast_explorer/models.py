@@ -135,7 +135,7 @@ def sarima(series: pd.Series, horizon: int, level: float = 0.80) -> pd.DataFrame
         order=(0, 1, 1),
         seasonal_order=(0, 1, 1, SEASON_LENGTH),
     )
-    result = model.fit(disp=False)
+    result = model.fit(disp=False, maxiter=200)
     fc = result.get_forecast(steps=horizon)
     intervals = fc.conf_int(alpha=1 - level)
 

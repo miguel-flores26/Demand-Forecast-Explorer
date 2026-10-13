@@ -47,6 +47,17 @@ def test_intervals_widen_with_horizon(key):
     assert width[-1] > width[0]
 
 
+def test_backtest_runs_all_models():
+    from forecast_explorer import backtest as bt
+
+    s = make_series(n_months=84, noise=0.01)
+    res = bt.rolling_origin_backtest(s, horizon=6, n_origins=2, step=3)
+    assert set(res["model"]) == {"seasonal_naive", "ets", "sarima"}
+    summary = bt.summarize(res)
+    assert summary["mae"].notna().all()
+    assert len(bt.verdict(summary)) == 5  # 2 comparisons + 3 coverage notes
+
+
 @pytest.mark.parametrize("key", STATS_MODELS)
 def test_validation_applies(key):
     with pytest.raises(ValueError, match="at least 36 months"):
