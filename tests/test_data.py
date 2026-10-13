@@ -38,6 +38,14 @@ def test_parse_returns_monthly_index():
     assert s.index[0] == pd.Timestamp("2024-01-01")
 
 
+def test_parse_returns_floats_even_for_whole_numbers():
+    # Real FRED retail files contain whole numbers only; found when the loader returned
+    # int64 on live data.
+    text = "observation_date,X\n2024-01-01,75774\n2024-02-01,75343\n"
+    s = data.parse_fred_csv(text, "X")
+    assert s.dtype == "float64"
+
+
 def test_parse_sorts_out_of_order_rows():
     text = "observation_date,X\n2024-03-01,3\n2024-01-01,1\n2024-02-01,2\n"
     assert list(data.parse_fred_csv(text, "X")) == [1.0, 2.0, 3.0]

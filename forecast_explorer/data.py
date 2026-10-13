@@ -59,7 +59,9 @@ def parse_fred_csv(text: str, series_id: str) -> pd.Series:
         )
 
     dates = pd.to_datetime(df.iloc[:, 0], errors="coerce")
-    values = pd.to_numeric(df.iloc[:, 1], errors="coerce")  # "." and blanks become NaN
+    # "." and blanks become NaN. Cast to float so whole-number files don't come back as
+    # integers: the models expect floats, and the docstring promises them.
+    values = pd.to_numeric(df.iloc[:, 1], errors="coerce").astype(float)
 
     if dates.isna().any():
         bad = df.iloc[:, 0][dates.isna()].head(3).tolist()
