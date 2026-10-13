@@ -34,11 +34,22 @@ it beats a simple baseline. Sometimes it doesn't, and the app says so.
 
 ## Methods
 
-| Method | Role |
-|---|---|
-| Seasonal naive ("same month last year") | Baseline every other model must beat |
-| Exponential smoothing (Holt-Winters) | Standard trend + seasonality method |
-| Seasonal ARIMA | Classical statistical model |
+| Method | Specification | Role |
+|---|---|---|
+| Seasonal naive | Each month = same month one year earlier | Baseline every other model must beat |
+| Exponential smoothing | ETS(A, Ad, A): additive error, damped additive trend, additive seasonality, on log(sales) | Standard trend + seasonality method |
+| Seasonal ARIMA | ARIMA(0,1,1)(0,1,1)[12] ("airline" model), on log(sales) | Classical statistical model |
+
+All three return a point forecast and a prediction interval (80% by default).
+
+- **Log scale.** ETS and SARIMA are fitted to log(sales) because retail seasonal swings grow
+  with the level of sales. Back-transforming keeps forecasts positive, but it means their
+  point forecasts are medians rather than means.
+- **Fixed specifications.** SARIMA uses one fixed, well-known specification rather than
+  automatic order selection per series. That keeps it fast and predictable, but it may not be
+  the best-fitting ARIMA for every series.
+- **Baseline intervals** use the standard seasonal-naive formula from Hyndman & Athanasopoulos,
+  *Forecasting: Principles and Practice*.
 
 Evaluation: rolling-origin backtest, reporting MAE and MAPE per method. _Details TBD._
 
