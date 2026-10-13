@@ -22,8 +22,14 @@ it beats a simple baseline. Sometimes it doesn't, and the app says so.
 ## Data
 
 - **Built-in series:** U.S. Census Bureau, Monthly Retail Trade Survey (MRTS), monthly
-  sales by kind of business, retrieved via the Census Data API
-  (`api.census.gov/data/timeseries/eits/mrts`). Real, public data.
+  sales by kind of business in millions of dollars, retrieved from
+  [FRED](https://fred.stlouisfed.org/) (Federal Reserve Bank of St. Louis). Real, public data.
+  - Seven categories: total retail and food services, grocery, clothing, general merchandise,
+    building materials, electronic shopping/mail-order, and food services and drinking places.
+  - **Not seasonally adjusted**, on purpose: modelling seasonality is part of the forecasting task.
+  - Retrieved as FRED's public CSV download, so no API key is needed.
+  - Industry categories follow the NAICS classification used by these FRED series. The Census
+    Bureau is moving its surveys to the 2022 NAICS, which may eventually change or end some series.
 - **User uploads:** any monthly time series CSV with a date column and a numeric value column.
 
 ## Methods
