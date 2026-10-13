@@ -1,0 +1,4 @@
+# Development-only tools (testing, linting). Not needed by the deployed app.
+-r requirements.txt
+pytest>=7.4
+ruff>=0.4
