@@ -59,6 +59,12 @@ def test_summary_for_display_formats():
     assert table.loc["SARIMA", "80% interval coverage"] == "50%"
 
 
+def test_summary_for_display_without_units():
+    table = ah.summary_for_display(_summary(), level=0.80, unit=None)
+    assert "Avg error" in table.columns
+    assert table.loc["ETS", "Avg error"] == "1,132"
+
+
 def test_error_by_horizon_matches_manual_mean():
     s = make_series(n_months=96, noise=0.02)
     res = bt.rolling_origin_backtest(s, horizon=6, n_origins=3, step=2,

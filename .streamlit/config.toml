@@ -1,0 +1,10 @@
+# Streamlit settings for this app.
+
+[server]
+# Skip the first-run email prompt and don't try to open a browser (needed in Codespaces).
+headless = true
+# Uploaded CSVs are capped at 5 MB, matching the check in forecast_explorer/upload.py.
+maxUploadSize = 5
+
+[browser]
+gatherUsageStats = false
